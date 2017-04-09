@@ -2,8 +2,6 @@ package top.mkswqi.hander.activity;
 
 import android.support.v7.widget.*;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.LinearLayout;
 
 import top.mkswqi.hander.R;
@@ -42,11 +40,12 @@ public class MainActivity extends BaseActivity {
     private void initChangeMDataStateButton() {
         setChangeMDataStateText();
         changeMDataState.setOnClickListener((view) -> {
+            Configure.switchMobileDataState();
             setChangeMDataStateText();
         });
     }
 
-    private boolean setChangeMDataStateText() {
+    private void setChangeMDataStateText() {
         boolean isMDOn = Configure.getMobileDataState();
         if (isMDOn) {
             //Mobile Data is on
@@ -57,7 +56,6 @@ public class MainActivity extends BaseActivity {
             //Set button text to "Enable"
             changeMDataState.setText(getString(R.string.enable_mobile_data));
         }
-        return isMDOn;
     }
 
 }

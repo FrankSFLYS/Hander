@@ -2,13 +2,14 @@ package top.mkswqi.hander.base_class;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
-import java.util.Set;
+
+import static top.mkswqi.hander.base_class.ModifingMobileData.setMobileDataState;
 
 /**
  * Created by FrankFLY on 2017/4/7.
@@ -155,8 +156,8 @@ public class Configure {
     private static <T> Object getSharedPref(String key, T defaultVal, String prefType) {
         String className = defaultVal.getClass().getSimpleName();
         Class classOfT = defaultVal.getClass();
-        Log.d(TAG, "getConfig: key: " + key
-                + "className: " + className);
+        //Log.d(TAG, "getConfig: key: " + key
+        //        + " className: " + className);
         SharedPreferences pref;
         if (prefType.equals(CONFIG)) {
             pref = configPref;
@@ -264,16 +265,20 @@ public class Configure {
      * @return A boolean word shows whether Mobile Data is on
      */
     public static boolean getMobileDataState() {
+
+        boolean mobileDataEnabled = false; // Assume disabled
+
+        ConnectivityManager cm = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         try
         {
-            TelephonyManager telephonyService = (TelephonyManager) appContext.getSystemService(Context.TELEPHONY_SERVICE);
+            Class cmClass = Class.forName(cm.getClass().getName());
+            Method method = cmClass.getDeclaredMethod("getMobileDataEnabled");
+            method.setAccessible(true); // Make the method callable
 
-            Method getMobileDataEnabledMethod = telephonyService.getClass().getDeclaredMethod("getDataEnabled");
-
-            if (null != getMobileDataEnabledMethod)
-            {
-                return (Boolean) getMobileDataEnabledMethod.invoke(telephonyService);
-            }
+            // get the setting for "mobile data"
+            mobileDataEnabled = (Boolean)method.invoke(cm);
+            return mobileDataEnabled;
         }
         catch (Exception ex)
         {
@@ -282,73 +287,17 @@ public class Configure {
 
         return false;
     }
-/*
-    public void setMobileDataState(boolean mobileDataEnabled)
-    {
-        try
-        {
-            TelephonyManager telephonyService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-            Method setMobileDataEnabledMethod = telephonyService.getClass().getDeclaredMethod("setDataEnabled", boolean.class);
-
-            if (null != setMobileDataEnabledMethod)
-            {
-                setMobileDataEnabledMethod.invoke(telephonyService, mobileDataEnabled);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.e(TAG, "Error setting mobile data state", ex);
+    /**
+     * Switches mobile data state, if on, switch off, if off, switch on
+     */
+    public static void switchMobileDataState() {
+        boolean isMDataOn = getMobileDataState();
+        if (isMDataOn) {
+            setMobileDataState(false);
+        } else {
+            setMobileDataState(true);
         }
     }
-
-    public boolean getMobileDataState()
-    {
-        try
-        {
-            TelephonyManager telephonyService = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
-            Method getMobileDataEnabledMethod = telephonyService.getClass().getDeclaredMethod("getDataEnabled");
-
-            if (null != getMobileDataEnabledMethod)
-            {
-                boolean mobileDataEnabled = (Boolean) getMobileDataEnabledMethod.invoke(telephonyService);
-
-                return mobileDataEnabled;
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.e(TAG, "Error getting mobile data state", ex);
-        }
-
-        return false;
-    }
-    */
-    /*
-    public static String getStringConfig(String tag, String defaultVal) {
-        return configPref.getString(tag, defaultVal);
-    }
-
-    public static int getIntConfig(String tag, int defaultVal) {
-        return configPref.getInt(tag, defaultVal);
-    }
-
-    public static boolean getBoolConfig(String tag, boolean defaultVal) {
-        return configPref.getBoolean(tag, defaultVal);
-    }
-
-    public static long getLongConfig(String tag, long defaultVal) {
-        return configPref.getLong(tag, defaultVal);
-    }
-
-    public static float getFloatConfig(String tag, float defaultVal) {
-        return configPref.getFloat(tag, defaultVal);
-    }
-
-    public static Set<String> getStringSetConfig(String tag, Set<String> defaultVal) {
-        return configPref.getStringSet(tag, defaultVal);
-    }
-    */
 
 }
