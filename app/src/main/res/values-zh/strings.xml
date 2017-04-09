@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application -->
+    <string name="app_name">Hander</string>
+    <!-- MainActivity -->
+    <string name="listen_ringer_service_on">打开音量监控服务</string>
+    <string name="enable_mobile_data">打开移动网络</string>
+    <string name="disable_mobile_data">关闭移动网络</string>
+</resources>

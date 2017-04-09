@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Hander</string>
+
+    <!-- main activity -->
+    <string name="listen_ringer_service_on">Turn On Volume Change Service</string>
+    <string name="enable_mobile_data">Enable Mobile Data</string>
+    <string name="disable_mobile_data">Disable Mobile Data</string>
+</resources>
