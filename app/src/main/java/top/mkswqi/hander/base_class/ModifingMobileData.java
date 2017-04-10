@@ -6,12 +6,21 @@ import java.util.ArrayList;
 
 /**
  * Created by FrankFLY on 2017/4/9.
+ *
+ * Switch Mobile Data State
+ *
+ * Usage: setMobileDataState(boolean newState)
  */
 
 class ModifingMobileData extends ExecuteAsRootBase {
 
     private boolean state = false;
     private static final String TAG = "ModifingMobileData";
+
+    public ModifingMobileData(boolean state) {
+        this.state = state;
+    }
+
     @Override
     protected ArrayList<String> getCommandsToExecute() {
 
@@ -43,10 +52,9 @@ class ModifingMobileData extends ExecuteAsRootBase {
     {
         try
         {
-            ModifingMobileData exer = new ModifingMobileData();
 
             if (ExecuteAsRootBase.canRunRootCommands()) {
-                exer.switchState(mobileDataEnabled);
+                ModifingMobileData exer = new ModifingMobileData(mobileDataEnabled);
                 exer.execute();
             }
             /*
